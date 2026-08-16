@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Step‑Up Approach — Necrotizing Pancreatitis (Interactive)</title>
+  <style>
+    :root{--bg:#f7f8fb;--card:#fff;--accent:#1f6feb;--ok:#0b9f5a;--warn:#e09b2d;--danger:#d93b3b}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0;background:var(--bg);color:#111}
+    header{background:linear-gradient(90deg,rgba(31,111,235,.12),transparent);padding:18px 16px;border-bottom:1px solid rgba(0,0,0,.04)}
+    h1{margin:0;font-size:18px}
+    .container{max-width:900px;margin:18px auto;padding:12px}
+    .card{background:var(--card);border-radius:10px;padding:14px;box-shadow:0 6px 18px rgba(20,20,40,.06);margin-bottom:12px}
+    .prompt{font-weight:600;margin-bottom:8px}
+    .buttons{display:flex;flex-wrap:wrap;gap:8px}
+    button.opt{padding:10px 12px;border:2px solid #e6e9ef;background:white;border-radius:8px;min-width:120px;text-align:center;font-weight:600}
+    button.opt.selected{border-color:var(--accent);background:linear-gradient(180deg,rgba(31,111,235,.06),white)}
+    .result{padding:10px;border-radius:8px;margin-top:10px}
+    .result.recommend{background:linear-gradient(90deg,rgba(11,159,90,.06),white);border-left:4px solid var(--ok)}
+    .result.warn{background:linear-gradient(90deg,rgba(224,155,45,.06),white);border-left:4px solid var(--warn)}
+    .result.danger{background:linear-gradient(90deg,rgba(217,59,59,.06),white);border-left:4px solid var(--danger)}
+    .small{font-size:13px;color:#444}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .linkish{background:transparent;border:none;color:var(--accent);font-weight:600;padding:8px 0;cursor:pointer}
+    footer{font-size:13px;color:#555;padding:12px;text-align:center}
+    @media (max-width:420px){button.opt{min-width:100%}}
+    .cite{font-size:13px;color:#444;margin-top:8px}
+  </style>
+</head>
+<body>
+<header>
+  <div class="container"><h1>Step‑Up Approach — Necrotizing Pancreatitis (interactive)</h1></div>
+</header>
+
+<main class="container">
+  <div class="card" id="intro">
+    <div class="small">Mobile-first, touch-friendly decision tool summarizing the step-up approach. Use for teaching and quick decision checks — not a substitute for full clinical judgment or local protocols.</div>
+  </div>
+
+  <div class="card">
+    <div class="prompt">1) Timing since symptom onset</div>
+    <div class="buttons" id="timingBtns">
+      <button class="opt" data-value="lt4">&lt; 4 weeks</button>
+      <button class="opt" data-value="gte4">&ge; 4 weeks (preferable)</button>
+    </div>
+    <div class="small" style="margin-top:8px">Goal: delay invasive necrosectomy until walled‑off necrosis if possible (commonly ≥4 weeks).</div>
+  </div>
+
+  <div class="card">
+    <div class="prompt">2) Is infection suspected or proven in necrosis?</div>
+    <div class="buttons" id="infectionBtns">
+      <button class="opt" data-value="yes">Yes — suspected/proven infection</button>
+      <button class="opt" data-value="no">No — sterile necrosis</button>
+    </div>
+    <div class="small" style="margin-top:8px">Infection = fever, rising WBC, positive cultures, gas on imaging, or clear clinical deterioration.</div>
+  </div>
+
+  <div class="card">
+    <div class="prompt">3) Is the patient clinically unstable / septic or organ‑failure?</div>
+    <div class="buttons" id="instabilityBtns">
+      <button class="opt" data-value="yes">Yes — unstable / uncontrolled sepsis / persistent organ failure</button>
+      <button class="opt" data-value="no">No — hemodynamically stable</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="prompt">4) Response to conservative / drainage therapy</div>
+    <div class="buttons" id="responseBtns">
+      <button class="opt" data-value="improve">Improving with conservative +/- catheter drainage</button>
+      <button class="opt" data-value="noimprove">No improvement or worsening</button>
+    </div>
+    <div class="small" style="margin-top:8px">Conservative = antibiotics when indicated, organ support, nutritional support (enteral feeding), and ICU care as needed.</div>
+  </div>
+
+  <div class="card">
+    <div class="prompt">Recommendation</div>
+    <div id="recommendation" class="result small">Make selections above to get a tailored recommendation.</div>
+
+    <div class="actions">
+      <button class="linkish" id="printSummary">Print / Export summary</button>
+      <button class="linkish" id="showCite">Show citations</button>
+    </div>
+  </div>
+
+  <div class="card small" id="summaryExport" style="display:none">
+    <div><strong>Printable summary</strong></div>
+    <pre id="summaryText" style="white-space:pre-wrap;border-radius:6px;padding:8px;background:#f3f5f9;margin-top:8px"></pre>
+    <div style="margin-top:8px"><button class="opt" id="closeSummary" style="min-width:auto;padding:8px 10px">Close</button></div>
+  </div>
+
+  <div class="card" id="citations" style="display:none">
+    <div class="prompt">Selected references</div>
+    <div class="cite">
+      1) van Santvoort HC et al. "A step-up approach or open necrosectomy for necrotizing pancreatitis" (PANTER trial). N Engl J Med. 2010.<br>
+      2) International guidelines: IAP/APA evidence-based guidelines and WSES guidelines on acute pancreatitis (timing and step-up approach).<br>
+      3) Review: Endoscopic vs surgical management — meta-analyses and more recent trials (consult local protocol).<br>
+      (Links not embedded to keep file self-contained; search the trial names or guideline titles for full texts.)
+    </div>
+    <div style="margin-top:8px"><button class="opt" id="closeCite" style="min-width:auto;padding:8px 10px">Close</button></div>
+  </div>
+
+  <footer class="card small">
+    Atlas interactive tool -- acute pancreatitis by Dr Apoorva Chandra
+  </footer>
+</main>
+
+<script>
+(function(){
+  // simple state
+  const state = { timing:null, infection:null, instability:null, response:null }
+
+  function q(sel){return document.querySelector(sel)}
+  function qa(sel){return Array.from(document.querySelectorAll(sel))}
+
+  function makeButtonsWork(container, key) {
+    qa(container + ' .opt').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        // toggle selected style
+        qa(container + ' .opt').forEach(x=>x.classList.remove('selected'))
+        b.classList.add('selected')
+        state[key] = b.dataset.value
+        evaluate()
+      })
+    })
+  }
+
+  makeButtonsWork('#timingBtns','timing')
+  makeButtonsWork('#infectionBtns','infection')
+  makeButtonsWork('#instabilityBtns','instability')
+  makeButtonsWork('#responseBtns','response')
+
+  function evaluate(){
+    const rec = q('#recommendation')
+    // Need at least timing and infection chosen to give meaningful advice:
+    if(!state.timing || !state.infection || !state.instability || !state.response){
+      rec.className = 'result small'
+      rec.textContent = 'Make all selections above to get a tailored recommendation.'
+      return
+    }
+
+    // Logic (condensed clinical logic for teaching)
+    // If unstable/septic -> urgent source control; prefer minimally invasive drainage if possible but be prepared for necrosectomy
+    if(state.instability === 'yes') {
+      rec.className = 'result danger small'
+      rec.innerHTML = 'Clinical instability or ongoing sepsis: prioritize urgent source control and resuscitation.<br>- Start/optimize antibiotics and ICU care.<br>- If collection accessible, perform percutaneous or endoscopic drainage promptly.<br>- If drainage fails or source not controlled, escalate to necrosectomy (endoscopic or surgical) as required.<br><strong>Note:</strong> early drainage/necrosectomy may be necessary despite timing.'
+      return
+    }
+
+    // If sterile and stable and <4 weeks -> conservative care
+    if(state.infection === 'no' && state.timing === 'lt4') {
+      rec.className = 'result recommend small'
+      rec.innerHTML = 'Sterile necrosis & &lt;4 weeks: Prefer conservative management and supportive care.<br>- Enteral nutrition, organ support, observe.<br>- Defer invasive interventions until walled‑off necrosis if possible (≥4 weeks).'
+      return
+    }
+
+    // If infection suspected/proven and stable
+    if(state.infection === 'yes' && state.instability === 'no') {
+      // prefer step-up: antibiotics, then percutaneous or endoscopic drainage; necrosectomy only if no improvement
+      if(state.timing === 'gte4') {
+        rec.className = 'result recommend small'
+        rec.innerHTML = 'Infected necrosis & ≥4 weeks: Step‑up approach recommended.<br>- Start/optimize antibiotics and supportive care.<br>- First-line: minimally invasive drainage (endoscopic transmural or percutaneous catheter) depending on anatomy & expertise.<br>- If no improvement: escalate to endoscopic or minimally invasive surgical necrosectomy.<br>- Reserve open surgery for failure of less invasive options.'
+      } else {
+        // <4 weeks but stable & infection -> try drainage; avoid immediate open necrosectomy if possible
+        rec.className = 'result warn small'
+        rec.innerHTML = 'Infected necrosis & &lt;4 weeks but clinically stable: Consider minimally invasive drainage (percutaneous or endoscopic) and antibiotics. Attempt to delay definitive necrosectomy until walled‑off necrosis if patient permits. Escalate if no clinical improvement.'
+      }
+      return
+    }
+
+    // If sterile, >=4 weeks and not improving
+    if(state.infection === 'no' && state.timing === 'gte4' && state.response === 'noimprove') {
+      rec.className = 'result warn small'
+      rec.innerHTML = 'Sterile necrosis, ≥4 weeks, not improving: Reassess for occult infection or complications (obstruction, persistent inflammation). Consider drainage if symptomatic (e.g., pain, persistent SIRS, organ dysfunction) and escalate as indicated.'
+      return
+    }
+
+    // Default fallback
+    rec.className = 'result small'
+    rec.textContent = 'Consider conservative care and specialist multidisciplinary discussion (surgery, gastroenterology, interventional radiology, critical care). Use step-up principles: start least invasive, escalate if no improvement.'
+  }
+
+  // Summary print/export
+  q('#printSummary').addEventListener('click', ()=>{
+    const container = q('#summaryExport'); container.style.display='block'
+    const s = [
+      'Step‑Up Approach — Decision summary',
+      'Timing: ' + (state.timing || '[not selected]'),
+      'Infection suspected/proven: ' + (state.infection || '[not selected]'),
+      'Clinical instability / sepsis: ' + (state.instability || '[not selected]'),
+      'Response to therapy: ' + (state.response || '[not selected]'),
+      '',
+      'Recommendation:',
+      q('#recommendation').innerText
+    ]
+    q('#summaryText').textContent = s.join('\n')
+    window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})
+  })
+  q('#closeSummary').addEventListener('click', ()=> q('#summaryExport').style.display='none')
+
+  // citations
+  q('#showCite').addEventListener('click', ()=>{ q('#citations').style.display='block'; q('#citations').scrollIntoView({behavior:'smooth'}) })
+  q('#closeCite').addEventListener('click', ()=> q('#citations').style.display='none')
+
+  // accessibility: allow keyboard selection
+  qa('button.opt').forEach(b=>b.addEventListener('keyup', e=>{ if(e.key==='Enter') b.click() }))
+
+})();
+</script>
+</body>
+</html>
